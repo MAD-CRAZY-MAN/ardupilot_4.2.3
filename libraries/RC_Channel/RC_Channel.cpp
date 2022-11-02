@@ -1069,7 +1069,6 @@ bool RC_Channel::do_aux_function(const aux_func_t ch_option, const AuxSwitchPos 
         switch (ch_flag) {
         case AuxSwitchPos::HIGH: {
             SRV_Channels::set_emergency_stop(true);
-
             // log E-stop
             AP_Logger *logger = AP_Logger::get_singleton();
             if (logger && logger->logging_enabled()) {

@@ -11,6 +11,7 @@
 #include <AC_AttitudeControl/AC_AttitudeControl.h> // Attitude control library
 #include <AP_Terrain/AP_Terrain.h>
 #include <AC_Avoidance/AC_Avoid.h>                 // Stop at fence library
+#include <AP_Rally/AP_Rally.h>
 
 class AC_WPNav
 {

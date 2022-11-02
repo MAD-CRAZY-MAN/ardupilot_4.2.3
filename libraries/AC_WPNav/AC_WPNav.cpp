@@ -586,6 +586,9 @@ int32_t AC_WPNav::get_wp_bearing_to_destination() const
 bool AC_WPNav::update_wpnav()
 {
     bool ret = true;
+    bool jet = false;
+    static bool old_jet = false;
+    AP_Rally *rally = AP::rally();
 
     if (!is_equal(_wp_speed_cms.get(), _last_wp_speed_cms)) {
         set_speed_xy(_wp_speed_cms);
@@ -606,6 +609,30 @@ bool AC_WPNav::update_wpnav()
         ret = false;
     }
 
+    Location ahrs_loc;
+    AP::ahrs().get_location(ahrs_loc);
+    RallyLocation rally_point = {};
+    rally->find_nearest_rally_point(ahrs_loc, rally_point);
+
+    Location rally_loc = rally->rally_location_to_location(rally_point);
+    float dis = ahrs_loc.get_distance(rally_loc);
+    
+    if (dis<=3.0)
+        jet = true;
+    else
+        jet = false;
+
+    if(old_jet != jet)
+    {
+        if(jet)
+            //hal.console->printf("ON \n");
+            SRV_Channels::set_output_pwm_chan(CH_10, 1800); 
+        else    
+            //hal.console->printf("OFF \n");
+            SRV_Channels::set_output_pwm_chan(CH_10, 1100); 
+    }
+    old_jet = jet;
+    
     _pos_control.update_xy_controller();
 
     _wp_last_update = AP_HAL::millis();
